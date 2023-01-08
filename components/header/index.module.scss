@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  height: 104px;
+  color: #fff;
+  .items {
+    span {
+      margin-left: 8px;
+    }
+  }
+}

@@ -1,0 +1,110 @@
+.container {
+  position: relative;
+  display: grid;
+  grid-template:
+    'icon field optional' 1fr
+    'icon value value' 1fr / 52px auto 1fr;
+  background: #edf0f2;
+  height: 50px;
+  padding: 6px 0;
+  border-radius: 25px;
+  align-items: center;
+  cursor: pointer;
+
+  .icon {
+    grid-area: icon;
+    justify-self: center;
+    width: min-content;
+    pointer-events: none;
+    img,
+    div {
+      width: 32px;
+      height: 32px;
+      border-radius: 100%;
+    }
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-weight: 800;
+      text-transform: capitalize;
+    }
+  }
+
+  .field {
+    grid-area: field;
+    color: #121314;
+    font-weight: 700;
+    text-transform: capitalize;
+    padding-right: 10px;
+    pointer-events: none;
+  }
+
+  .optional {
+    grid-area: optional;
+    pointer-events: none;
+    span {
+      display: flex;
+      align-items: center;
+      width: min-content;
+      padding: 2px;
+      background-color: rgba(82, 98, 121, 0.1);
+      color: #5f6570;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  }
+
+  .value {
+    grid-area: value;
+    padding-right: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5f6570;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .actions {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    display: flex;
+    height: 32px;
+    border-radius: 16px;
+    transform: translateY(-50%);
+    background: #fff;
+    overflow: hidden;
+    button {
+      appearance: none;
+      border: none;
+      padding: none;
+      background: #fff;
+      width: 38px;
+      cursor: pointer;
+      outline-style: none;
+      &:hover {
+        background: rgba(82, 98, 121, 0.1);
+      }
+      img {
+        pointer-events: none;
+      }
+    }
+  }
+
+  &[data-namespace='addresses'],
+  &[data-namespace='dweb'] {
+    .field {
+      text-transform: uppercase;
+    }
+  }
+
+  &:hover {
+    background: rgba(237, 240, 242, 0.6);
+  }
+}

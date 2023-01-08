@@ -1,0 +1,67 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  grid-area: overview;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(182, 196, 217, 0.4);
+  box-shadow: var(--box-shadow);
+  height: 362px;
+  padding: 20px 20px 32px 36px;
+  background: #fff;
+  line-height: 1;
+
+  .menu {
+    height: 36px;
+    text-align: right;
+    button {
+      height: 36px;
+      padding: 0 16px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #121314;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(190, 192, 194, 0.16);
+      cursor: pointer;
+    }
+  }
+
+  .avatar {
+    position: relative;
+    margin-bottom: 32px;
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    overflow: hidden;
+    border: 1px solid transparent;
+    &[data-namespace] {
+      border: 1px dashed #121314;
+      cursor: pointer;
+    }
+  }
+
+  .name {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: rgb(95, 101, 112);
+    border: 1px solid transparent;
+    &[data-namespace] {
+      border: 1px dashed #121314;
+      cursor: pointer;
+    }
+  }
+  .edit {
+    position: absolute;
+    left: 0;
+  }
+}

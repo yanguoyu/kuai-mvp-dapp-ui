@@ -1,0 +1,74 @@
+.container {
+  box-shadow: var(--box-shadow);
+  border: 1px solid rgba(182, 196, 217, 0.4);
+  border-radius: var(--border-radius);
+  min-height: 374px;
+  overflow: hidden;
+  background: #fff;
+  header {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 0 26px;
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: capitalize;
+    img {
+      width: 32px;
+      height: 32px;
+      margin-right: 8px;
+    }
+  }
+
+  &[data-namespace='profile'] header {
+    background: rgba(156, 234, 236, 0.2);
+    color: #65bda8;
+  }
+
+  &[data-namespace='addresses'] header {
+    background: rgba(156, 236, 178, 0.2);
+    color: #6dbf6f;
+  }
+
+  &[data-namespace='custom'] header {
+    background: rgba(156, 174, 236, 0.2);
+    color: #7885ff;
+  }
+
+  &[data-namespace='dweb'] header {
+    background: rgba(156, 188, 236, 0.2);
+    color: #7db1ff;
+  }
+
+  &[data-namespace='permissions'] header {
+    background: rgba(172, 156, 236, 0.2);
+    color: #8684e4;
+  }
+
+  .add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--primary-color);
+    background-color: #fff;
+    border-radius: 25px;
+    border: 1px dashed #121314;
+    cursor: pointer;
+    outline-color: var(--primary-color);
+
+    &::before {
+      content: '+ ';
+      white-space: pre;
+    }
+  }
+
+  .list {
+    display: flex;
+    padding: 14px;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

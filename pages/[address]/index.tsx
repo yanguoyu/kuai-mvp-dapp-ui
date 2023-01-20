@@ -1,14 +1,14 @@
 import type { ProfilePrimaryKey, AddressPrimaryKey, DwebPrimaryKey, StorageItem } from '../../utils/constants'
 import { useState } from 'react'
-import Head from 'next/head'
 import { Inter } from '@next/font/google'
-import Header from '../../components/header'
+import { useSignMessage } from 'wagmi'
 import Overview from '../../components/overview'
 import Section from '../../components/section'
 import UpdateInfoDialog, { Item } from '../../components/updateInfoDialog'
 import { useIsOwner } from '../../utils/hooks'
 import { mockAccount } from '../../utils/mock'
 import styles from './address.module.scss'
+import { txToMsg } from '../../utils/tx'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,6 +35,15 @@ export default function Home() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [account, _setAccount] = useState<Account>(mockAccount)
   const isOwner = useIsOwner()
+  const { signMessageAsync } = useSignMessage()
+
+  const handleSubmit = async (tx: any) => {
+    const msg = txToMsg(tx)
+    // sign message with metamask
+    const signed = await signMessageAsync({ message: msg })
+    console.log(signed)
+    // send signed to ckb node
+  }
 
   const handleRecordClick = (e: React.MouseEvent<HTMLElement>) => {
     if (e.target instanceof HTMLElement) {
@@ -73,16 +82,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>MVP DApp for Kuai</title>
-        <meta name="description" content="MVP DApp to verify abstract of cell" />
-        <meta name="referrer" content="no-referrer" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Header />
-
       <main className={inter.className} onClick={handleRecordClick}>
         <div className={styles.sections} data-is-editable={isOwner && isEditMode}>
           <Overview
@@ -101,7 +100,12 @@ export default function Home() {
         </div>
       </main>
       {activeItem && account?.storage ? (
-        <UpdateInfoDialog item={activeItem} storage={account.storage} onDismiss={handleDialogDismiss} />
+        <UpdateInfoDialog
+          item={activeItem}
+          storage={account.storage}
+          onDismiss={handleDialogDismiss}
+          onSubmit={handleSubmit}
+        />
       ) : null}
     </>
   )

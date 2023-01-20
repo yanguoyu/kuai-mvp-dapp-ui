@@ -10,8 +10,9 @@ export type Item = { namespace: string; field?: string }
 const UpdateInfoDialog: FC<{
   item: Item
   storage: Record<string, Partial<Record<string, { value?: string; optional?: string }>>>
+  onSubmit: (tx: any) => void
   onDismiss: () => void
-}> = ({ item, storage, onDismiss }) => {
+}> = ({ item, storage, onDismiss, onSubmit }) => {
   const ref = useRef<HTMLDialogElement>(null)
   // todo: use cache to fetch value
 
@@ -48,6 +49,9 @@ const UpdateInfoDialog: FC<{
       value: e.currentTarget['update-value'].value,
       optional: e.currentTarget['update-optional'].value,
     })
+    // request a tx to update info
+    const mockTx = 'mock tx'
+    onSubmit(mockTx)
   }
 
   return (

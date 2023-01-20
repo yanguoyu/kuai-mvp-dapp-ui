@@ -1,9 +1,7 @@
 import type { ProfilePrimaryKey, AddressPrimaryKey, DwebPrimaryKey, StorageItem } from '../../utils/constants'
 import { useState } from 'react'
-import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import { useSignMessage } from 'wagmi'
-import Header from '../../components/header'
 import Overview from '../../components/overview'
 import Section from '../../components/section'
 import UpdateInfoDialog, { Item } from '../../components/updateInfoDialog'
@@ -84,16 +82,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>MVP DApp for Kuai</title>
-        <meta name="description" content="MVP DApp to verify abstract of cell" />
-        <meta name="referrer" content="no-referrer" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Header />
-
       <main className={inter.className} onClick={handleRecordClick}>
         <div className={styles.sections} data-is-editable={isOwner && isEditMode}>
           <Overview

@@ -4,6 +4,8 @@ export const presetKeys = {
   dweb: ['ifps', 'ipns', 'arwave'] as const,
 }
 
+export const IS_MAINNET = process.env.NEXT_PUBLIC_CHAIN_TYPE === 'mainnet'
+
 export type ProfilePrimaryKey = typeof presetKeys.profile[number]
 export type AddressPrimaryKey = typeof presetKeys.addresses[number]
 export type DwebPrimaryKey = typeof presetKeys.dweb[number]

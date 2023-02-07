@@ -13,7 +13,7 @@ const iconUrl: Record<string, string> = {
   ckb: '/chain/chain-ckb.png',
   ipfs: '/dweb/dweb-ipfs.png',
   ipns: '/dweb/dweb-ipns.png',
-  owner: '/chain/chain-eth.png',
+  owner: '/chain/chain-ckb.png',
   manager: '/chain/chain-eth.png',
 }
 

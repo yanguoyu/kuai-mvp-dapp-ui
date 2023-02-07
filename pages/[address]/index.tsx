@@ -5,7 +5,7 @@ import { useSignMessage } from 'wagmi'
 import Overview from '../../components/overview'
 import Section from '../../components/section'
 import UpdateInfoDialog, { Item } from '../../components/updateInfoDialog'
-import { useIsOwner } from '../../utils/hooks'
+import { useAddresses, useIsOwner } from '../../utils/hooks'
 import { mockAccount } from '../../utils/mock'
 import styles from './address.module.scss'
 import { txToMsg } from '../../utils/tx'
@@ -36,6 +36,8 @@ export default function Home() {
   const [account, _setAccount] = useState<Account>(mockAccount)
   const isOwner = useIsOwner()
   const { signMessageAsync } = useSignMessage()
+
+  const addresses = useAddresses()
 
   const handleSubmit = async (tx: any) => {
     const msg = txToMsg(tx)
@@ -96,7 +98,13 @@ export default function Home() {
               <Section {...s} records={account.storage[s.namespace]} key={s.namespace} />
             ) : null
           )}
-          <Section namespace="permissions" records={mockAccount.permissions} />
+          <Section
+            namespace="permissions"
+            records={{
+              owner: { value: addresses.ckb ?? '' },
+              manager: { value: addresses.eth ?? '' },
+            }}
+          />
         </div>
       </main>
       {activeItem && account?.storage ? (

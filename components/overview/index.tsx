@@ -1,13 +1,20 @@
-import type { FC } from 'react'
+import { FC } from 'react'
+import { useAPI } from './hook';
 import styles from './index.module.scss'
 
 const bitAvatarBaseUrl = 'https://identicons.did.id/identicon'
 const Overview: FC<
-  Partial<Record<'avatar' | 'name' | 'description', string>> & { onEditBtnClick: () => void; isEditable: boolean }
-> = ({ avatar, name, description, onEditBtnClick, isEditable }) => {
+  Partial<Record<'avatar' | 'name' | 'description', string>> & { onEditBtnClick: () => void; isEditable: boolean; omnilockAddress: string }
+> = ({ avatar, name, description, onEditBtnClick, isEditable, omnilockAddress }) => {
+  const { onClaimData, onLoadData, onReadData, onSetData, onClearData } = useAPI(omnilockAddress)
   return (
     <div className={styles.container}>
       <div className={styles.menu}>
+        <button onClick={onClaimData}>claim</button>
+        <button onClick={onLoadData}>load</button>
+        <button onClick={onReadData}>read</button>
+        <button onClick={onSetData}>set</button>
+        <button onClick={onClearData}>clear</button>
         <button onClick={onEditBtnClick}>{isEditable ? 'View Data' : 'Manage Data'}</button>
       </div>
       <img
@@ -18,7 +25,7 @@ const Overview: FC<
         data-field={isEditable ? 'avatar' : undefined}
         data-action={isEditable ? 'edit' : undefined}
       />
-      <div className={styles.name}>{name}</div>
+      <div className={styles.name}>{name}{ omnilockAddress && <span>{omnilockAddress}</span>}</div>
       {description ? (
         <div
           className={styles.description}

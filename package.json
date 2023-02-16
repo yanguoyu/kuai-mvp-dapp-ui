@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckb-lumos/lumos": "^0.19.0",
     "@next/font": "13.1.1",
     "next": "13.1.1",
     "react": "18.2.0",

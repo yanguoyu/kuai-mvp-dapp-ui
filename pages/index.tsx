@@ -1,5 +1,5 @@
 import type { ProfilePrimaryKey, AddressPrimaryKey, DwebPrimaryKey, StorageItem } from '../utils/constants'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import Header from '../components/header'
@@ -8,6 +8,7 @@ import Section from '../components/section'
 import UpdateInfoDialog, { Item } from '../components/updateInfoDialog'
 import { mockAccount } from '../utils/mock'
 import styles from './index.module.scss'
+import { connectToMetaMask, Ethereum } from '../utils/linkMetamask'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -69,6 +70,18 @@ export default function Home() {
     setIsEditable((is) => !is)
   }
 
+  const [omnilockAddress, setOmnilockAddress]= useState('')
+  const connectWallet = useCallback(() => {
+    connectToMetaMask().then(setOmnilockAddress)
+  }, [setOmnilockAddress])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (Ethereum.ethereum.selectedAddress) connectWallet();
+      Ethereum.ethereum.addListener("accountsChanged", connectWallet);
+    }, 100)
+    return () => clearTimeout(timer)
+  }, []);
+  
   return (
     <>
       <Head>
@@ -79,7 +92,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
+      <Header connectWallet={connectWallet} />
 
       <main className={inter.className} onClick={handleRecordClick}>
         <div className={styles.sections} data-is-editable={isEditable}>
@@ -89,6 +102,7 @@ export default function Home() {
             description={account.storage.profile.description?.value}
             onEditBtnClick={handleEditBtnClick}
             isEditable={isEditable}
+            omnilockAddress={omnilockAddress}
           />
           {sections.map((s) =>
             s.namespace in account.storage ? (

@@ -23,6 +23,7 @@
       background: #fff;
       border: 1px solid rgba(190, 192, 194, 0.16);
       cursor: pointer;
+      margin-left: 4px;
     }
   }
 
@@ -44,6 +45,12 @@
     font-size: 48px;
     font-weight: 800;
     margin-bottom: 12px;
+
+    & > span {
+      margin-left: 12px;
+      font-size: 12px;
+      font-weight: 400;
+    }
   }
 
   .description {

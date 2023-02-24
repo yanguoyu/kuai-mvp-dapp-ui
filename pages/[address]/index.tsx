@@ -157,6 +157,7 @@ export default function Home() {
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message)
+        window.alert(e.message)
       }
       setIsLoading(false)
     } finally {

@@ -21,6 +21,7 @@ const Index = () => {
   // patch mismatch hydration
   const [addr, setAddr] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
   const addresses = useAddresses()
 
   const { signMessageAsync } = useSignMessage()
@@ -79,26 +80,43 @@ const Index = () => {
     }
   }
 
+  const handleCopyAddr = () => {
+    if (addresses.ckb) {
+      window.navigator.clipboard.writeText(addresses.ckb)
+      setIsCopied(true)
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 3000)
+    }
+  }
+
   const currentBalance = BI.from(meta?.capacity ?? 0)
 
   return (
     <div className={`${styles.container} ${inter.className}`}>
       <div className={styles.title}>Kuai MVP DApp Demo</div>
       <div className={styles.desc}>
-        {addr ? null : 'Connect a wallet to view its storage'}
-        {currentBalance.gt(MIN_SHANNON) ? (
-          <button onClick={handleClaim} disabled={isLoading} className={styles.claim}>
-            {isLoading ? 'Claiming' : 'Claim'}
-          </button>
+        {addr ? (
+          currentBalance.gt(MIN_SHANNON) ? (
+            <button onClick={handleClaim} disabled={isLoading} className={styles.claim}>
+              {isLoading ? 'Claiming' : 'Claim'}
+            </button>
+          ) : (
+            <div className={styles.faucet}>
+              {`At least ${MIN_CAPACITY} CKB required, current balance is around ${currentBalance.div(
+                CKB_DECIMAL
+              )} CKB, please claim in `}
+              <a href="https://faucet.nervos.org/" target="_blank" rel="noopener noreferrer">
+                Faucet
+              </a>
+              <br />
+              <button onClick={handleCopyAddr} disabled={isCopied} className={styles.copy}>
+                {isCopied ? 'CKB Address Copied' : `Copy CKB Address`}
+              </button>
+            </div>
+          )
         ) : (
-          <div className={styles.faucet}>
-            {`At least ${MIN_CAPACITY} CKB required, current balance is around ${currentBalance.div(
-              CKB_DECIMAL
-            )} CKB, please claim in `}
-            <a href="https://faucet.nervos.org/" target="_blank" rel="noopener noreferrer">
-              Faucet
-            </a>
-          </div>
+          'Connect a wallet to view its storage'
         )}
       </div>
     </div>

@@ -9,7 +9,7 @@ export const SERVER_API = process.env.NEXT_PUBLIC_SERVER_API
 export const STORAGE_CAPACITY = 500 || process.env.NEXT_PUBLIC_STORAGE_CAPACITY
 export const CKB_NODE = process.env.NEXT_PUBLIC_CKB_NODE
 
-export type ProfilePrimaryKey = typeof presetKeys.profile[number]
-export type AddressPrimaryKey = typeof presetKeys.addresses[number]
-export type DwebPrimaryKey = typeof presetKeys.dweb[number]
-export type StorageItem<Key extends string> = Partial<Record<Key, { value: string; optional?: string }>>
+export type ProfilePrimaryKey = (typeof presetKeys.profile)[number]
+export type AddressPrimaryKey = (typeof presetKeys.addresses)[number]
+export type DwebPrimaryKey = (typeof presetKeys.dweb)[number]
+export type StorageItems<Key extends string> = Array<{ key: Key; value: string; label?: string }>

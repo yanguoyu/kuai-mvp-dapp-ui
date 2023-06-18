@@ -11,9 +11,9 @@ const sectionIcon: Record<string, string> = {
   permissions: '/title-permissions.png',
 }
 
-const Section: FC<{ namespace: string; records: Partial<Record<string, { value: string; optional?: string }>> }> = ({
+const Section: FC<{ namespace: string; records: Array<{ key: string; value: string; label?: string }> }> = ({
   namespace,
-  records,
+  records = [],
 }) => {
   return (
     <section className={styles.container} style={{ gridArea: namespace }} data-namespace={namespace}>
@@ -25,9 +25,9 @@ const Section: FC<{ namespace: string; records: Partial<Record<string, { value: 
         <button data-edit-actions data-namespace={namespace} data-action="add" className={styles.add}>
           Add New
         </button>
-        {Object.entries(records).map(([k, v]) =>
-          v ? <ItemRecord key={k} field={k} value={v.value} optional={v.optional} namespace={namespace} /> : null
-        )}
+        {records.map(({ key, value, label }) => (
+          <ItemRecord key={key} field={key} value={value} optional={label} namespace={namespace} />
+        ))}
       </div>
     </section>
   )

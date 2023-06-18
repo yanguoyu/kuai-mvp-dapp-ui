@@ -45,14 +45,18 @@ const UpdateInfoDialog: FC<{
       [item.namespace]: {
         [e.currentTarget['update-field'].value]: {
           value: e.currentTarget['update-value'].value,
-          optional: e.currentTarget['update-optional'].value,
+          label: e.currentTarget['update-label'].value,
         },
       },
     })
   }
 
   const substorage: Record<string, any> = storage[item.namespace as keyof Storage]
-  const content = item.field && item.field in substorage ? substorage[item.field] : undefined
+  const content = substorage.find((s: { key: string }) => s.key === item.field) ?? {
+    key: item.field,
+    value: '',
+    label: '',
+  }
   const options = presetKeys[item.namespace as 'profile' | 'dweb' | 'addresses']
   const hasOptions = Array.isArray(options)
   const optionsId = `${item.namespace}-${item.field}-options`
@@ -70,10 +74,10 @@ const UpdateInfoDialog: FC<{
           <input id="update-value" defaultValue={content?.value} />
         </div>
         <div className={styles.optional}>
-          <label htmlFor="update-optional">
+          <label htmlFor="update-label">
             Label<span>(optional)</span>
           </label>
-          <input id="update-optional" defaultValue={content?.optional} />
+          <input id="update-label" defaultValue={content?.label} />
         </div>
         {hasOptions ? (
           <datalist id={optionsId}>

@@ -1,4 +1,4 @@
-import type { ProfilePrimaryKey, AddressPrimaryKey, DwebPrimaryKey, StorageItem } from '../../utils/constants'
+import type { ProfilePrimaryKey, AddressPrimaryKey, DwebPrimaryKey, StorageItems } from '../../utils/constants'
 import type { SignMessageArgs } from '@wagmi/core'
 import { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
@@ -17,10 +17,10 @@ import styles from './address.module.scss'
 const inter = Inter({ subsets: ['latin'] })
 
 export interface Storage {
-  profile: StorageItem<ProfilePrimaryKey>
-  addresses: StorageItem<AddressPrimaryKey>
-  custom: StorageItem<string>
-  dweb: StorageItem<DwebPrimaryKey>
+  profile: StorageItems<ProfilePrimaryKey>
+  addresses: StorageItems<AddressPrimaryKey>
+  custom: StorageItems<string>
+  dweb: StorageItems<DwebPrimaryKey>
 }
 
 const sections: Array<{ namespace: keyof Storage }> = [
@@ -43,7 +43,7 @@ const submitNewStorage = async (
     body: JSON.stringify({ value: newStorage }),
   }).then((res) => res.json())
 
-  const signedTx = await signTransaction(raw, signer)
+  const signedTx = await signTransaction(raw.data, signer)
   const txHash = await new RPC(CKB_NODE!).sendTransaction(signedTx, 'passthrough')
 
   console.info({ update: txHash })
@@ -55,10 +55,10 @@ export default function Home() {
   const [activeItem, setActiveItem] = useState<Item | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [storage, setStorage] = useState<Storage>({
-    profile: {},
-    addresses: {},
-    custom: {},
-    dweb: {},
+    profile: [],
+    addresses: [],
+    custom: [],
+    dweb: [],
   })
 
   const router = useRouter()
@@ -70,13 +70,15 @@ export default function Home() {
   const { data: onChainStorage } = useQuery(
     ['storage', addresses.ckb],
     () =>
-      fetch(`${SERVER_API}/load/${addresses.ckb}`).then((res) => {
-        if (res.status === 404) {
-          router.replace('/')
-          return
-        }
-        return res.json()
-      }),
+      fetch(`${SERVER_API}/load/${addresses.ckb}`)
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.code === '404') {
+            router.replace('/')
+            return
+          }
+          return res.data
+        }),
     {
       enabled: !!addresses.ckb,
       refetchInterval: 10000,
@@ -86,10 +88,10 @@ export default function Home() {
   useEffect(() => {
     setIsLoading(false)
     setStorage({
-      profile: onChainStorage?.profile ?? {},
-      addresses: onChainStorage?.addresses ?? {},
-      custom: onChainStorage?.custom ?? {},
-      dweb: onChainStorage?.dweb ?? {},
+      profile: onChainStorage?.profile ?? [],
+      addresses: onChainStorage?.addresses ?? [],
+      custom: onChainStorage?.custom ?? [],
+      dweb: onChainStorage?.dweb ?? [],
     })
   }, [onChainStorage])
 
@@ -101,7 +103,15 @@ export default function Home() {
     const namespace = Object.keys(newValue)[0]
     const field = Object.keys(newValue[namespace])[0]
     const newStorage = JSON.parse(JSON.stringify(storage))
-    newStorage[namespace][field] = newValue[namespace][field]
+
+    const oldValue = newStorage[namespace].find((item: { key: string }) => item.key === field)
+    if (oldValue) {
+      oldValue.value = newValue[namespace][field].value
+      oldValue.label = newValue[namespace][field].label
+    } else {
+      newStorage[namespace].push({ key: field, ...newValue[namespace][field] })
+    }
+
     try {
       const res = await submitNewStorage(addresses, newStorage, signMessageAsync)
     } catch (e) {
@@ -122,7 +132,7 @@ export default function Home() {
   const handleRemove = async (namespace: string, field: string) => {
     setIsLoading(true)
     const newStorage = JSON.parse(JSON.stringify(storage))
-    delete newStorage[namespace][field]
+    newStorage[namespace] = newStorage[namespace].filter((item: { key: string }) => item.key !== field)
     try {
       const res = await submitNewStorage(addresses, newStorage, signMessageAsync)
       console.debug({ remove: res?.txHash })
@@ -150,7 +160,7 @@ export default function Home() {
         },
       }).then((res) => res.json())
 
-      const signedTx = await signTransaction(raw, signMessageAsync)
+      const signedTx = await signTransaction(raw?.data, signMessageAsync)
       const txHash = await new RPC(CKB_NODE!).sendTransaction(signedTx, 'passthrough')
       console.info({ destroy: txHash })
       return { txHash }
@@ -208,8 +218,8 @@ export default function Home() {
         <div className={styles.sections} data-is-editable={isOwner && isEditMode}>
           <Overview
             name={`matickbase.bit`}
-            avatar={storage.profile.avatar?.value}
-            description={storage.profile.description?.value}
+            avatar={storage.profile.find((p) => p.key === 'avatar')?.value}
+            description={storage.profile.find((p) => p.key === 'description')?.value}
             onEditBtnClick={handleEditBtnClick}
             onDestroyBtnClick={handleDestroyBtnClick}
             isEditable={isOwner && isEditMode}
@@ -220,10 +230,10 @@ export default function Home() {
           )}
           <Section
             namespace="permissions"
-            records={{
-              owner: { value: addresses.ckb ?? '' },
-              manager: { value: addresses.eth ?? '' },
-            }}
+            records={[
+              { key: 'owner', value: addresses.ckb ?? '' },
+              { key: 'manager', value: addresses.eth ?? '' },
+            ]}
           />
         </div>
       </main>
